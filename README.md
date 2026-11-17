@@ -4,9 +4,6 @@ Continuing the fictional **Aqua Core Solutions** water-utility scenario from [aq
 
 > **Scope note:** Based on a course lab (a web-app PaaS scenario). I re-scoped it to a water-utility OT/IT scenario, added least-privilege access decisions, wrote a validation script, and documented the issues I hit. Built in the Azure portal as a learning lab, not a production deployment.
 
-## Walkthrough
-
-[![Click here for walkthrough](https://img.shields.io/badge/▶%20Click%20here%20for%20walkthrough-625DF5?style=for-the-badge&logo=loom&logoColor=white)](https://www.loom.com/share/00f32c14f10d4963b3db0dc1716eeb8f)
 
 ## What this proves
 
