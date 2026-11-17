@@ -12,6 +12,8 @@ Week 3 of my Azure learning portfolio. Continues the fictional **Aqua Core Solut
 
 A VM can read a secret from Key Vault **and** query an Azure SQL Database using only its **system-assigned managed identity**. No passwords or connection-string secrets are typed into or stored on the VM. An Azure Monitor alert emails me if database load gets high.
 
+Azure SQL Database is a PaaS service, so Azure runs the server, patching and backups, and I only manage who can access it.
+
 ## Architecture (what was built)
 
 | Component | Name | Purpose |
@@ -27,15 +29,15 @@ A VM can read a secret from Key Vault **and** query an Azure SQL Database using 
 1. **Created the database.** Made resource group `rg-lab03-jlassiter`, a logical SQL server (`sql-aquacore-water-ot`), and a Basic-tier database (`db-aquacore-water-ot`) in Central US.
    *Why: PaaS means Azure runs the server, patching, and backups; I manage access and monitoring.*
 2. **Created Key Vault and a secret.** Made `kv-aquacore` using Azure RBAC, stored the secret `sqlAdminpassword`, and gave myself Key Vault Administrator so I could manage it.
-   *Why: the secret lives in the vault, not in code.*
+   *Why: the secret lives in the vault, not in code. (The SQL login itself uses the identity token, not this secret.)*
 3. **Rebuilt the bastion VM and turned on its identity.** Re-ran `deploy.sh` from Project 2, then set the VM's **System assigned** identity to On.
    *Why: the identity is tied to the VM's lifecycle, so rebuilding the VM creates a new identity.*
 4. **Granted the VM access to the vault.** Assigned **Key Vault Secrets User** to the VM identity and deleted a leftover "Unknown" assignment from the old VM.
-   *Why: read-only on secrets, nothing more.*
+   *Why: least privilege, so the VM can read secrets but not change them.*
 5. **Set a Microsoft Entra admin on the SQL server.** Needed so I could create a database user for an identity.
    *Why: SQL has its own permission system, separate from Azure roles.*
 6. **Created the database user.** In Query editor (Entra sign-in), ran `CREATE USER ... FROM EXTERNAL PROVIDER` and `ALTER ROLE db_datareader ADD MEMBER ...`, then verified it in `sys.database_principals`.
-   *Why: least privilege, read-only.*
+   *Why: least privilege, so the VM can read data but not change it.*
 7. **Ran the validation from the VM.** SSH'd in, installed ODBC Driver 18 and `pyodbc`, and ran `validate_identity.py`. Both the Key Vault read and the SQL login passed with no password.
    *Why: the VM proves who it is with a token from the metadata service.*
 8. **Added monitoring.** Created a CPU-percentage metric alert on the database with an Action Group that emails me.
@@ -43,7 +45,7 @@ A VM can read a secret from Key Vault **and** query an Azure SQL Database using 
 
 The OT control VM (`vm-ot-control`) deliberately has **no** managed identity. It has no reason to reach the database or vault, and it sits in the private OT subnet from Project 2.
 
-![VM system-assigned identity is On; vm-ot-control has none](screenshots/vm-identity.png)
+![Bastion VM: system-assigned identity is On](screenshots/vm-identity.png)
 
 ## Access model (least privilege)
 
