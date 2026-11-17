@@ -25,21 +25,21 @@ A VM can read a secret from Key Vault **and** query an Azure SQL Database using 
 ## How I built it
 
 1. **Created the database.** Made resource group `rg-lab03-jlassiter`, a logical SQL server (`sql-aquacore-water-ot`), and a Basic-tier database (`db-aquacore-water-ot`) in Central US.
-   *Talking point: PaaS means Azure runs the server, patching, and backups; I manage access and monitoring.*
+   *Why: PaaS means Azure runs the server, patching, and backups; I manage access and monitoring.*
 2. **Created Key Vault and a secret.** Made `kv-aquacore` using Azure RBAC, stored the secret `sqlAdminpassword`, and gave myself Key Vault Administrator so I could manage it.
-   *Talking point: the secret lives in the vault, not in code.*
+   *Why: the secret lives in the vault, not in code.*
 3. **Rebuilt the bastion VM and turned on its identity.** Re-ran `deploy.sh` from Project 2, then set the VM's **System assigned** identity to On.
-   *Talking point: the identity is tied to the VM's lifecycle, so rebuilding the VM creates a new identity.*
+   *Why: the identity is tied to the VM's lifecycle, so rebuilding the VM creates a new identity.*
 4. **Granted the VM access to the vault.** Assigned **Key Vault Secrets User** to the VM identity and deleted a leftover "Unknown" assignment from the old VM.
-   *Talking point: read-only on secrets, nothing more.*
+   *Why: read-only on secrets, nothing more.*
 5. **Set a Microsoft Entra admin on the SQL server.** Needed so I could create a database user for an identity.
-   *Talking point: SQL has its own permission system, separate from Azure roles.*
+   *Why: SQL has its own permission system, separate from Azure roles.*
 6. **Created the database user.** In Query editor (Entra sign-in), ran `CREATE USER ... FROM EXTERNAL PROVIDER` and `ALTER ROLE db_datareader ADD MEMBER ...`, then verified it in `sys.database_principals`.
-   *Talking point: least privilege, read-only.*
+   *Why: least privilege, read-only.*
 7. **Ran the validation from the VM.** SSH'd in, installed ODBC Driver 18 and `pyodbc`, and ran `validate_identity.py`. Both the Key Vault read and the SQL login passed with no password.
-   *Talking point: the VM proves who it is with a token from the metadata service.*
+   *Why: the VM proves who it is with a token from the metadata service.*
 8. **Added monitoring.** Created a CPU-percentage metric alert on the database with an Action Group that emails me.
-   *Talking point: a managed database has no server to watch, so the alert is how I find out about trouble.*
+   *Why: a managed database has no server to watch, so the alert is how I find out about trouble.*
 
 The OT control VM (`vm-ot-control`) deliberately has **no** managed identity. It has no reason to reach the database or vault, and it sits in the private OT subnet from Project 2.
 
