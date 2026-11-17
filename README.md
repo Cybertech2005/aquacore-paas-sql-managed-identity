@@ -1,6 +1,6 @@
 # AquaCore PaaS Lab: Azure SQL, Managed Identity, Key Vault & Monitor
 
-Week 3 of my Azure learning portfolio. Continues the fictional **Aqua Core Solutions** water-utility scenario from [aquacore-water-ot-segmentation](https://github.com/Cybertech2005/aquacore-water-ot-segmentation).
+Continuing the fictional **Aqua Core Solutions** water-utility scenario from [aquacore-water-ot-segmentation](https://github.com/Cybertech2005/aquacore-water-ot-segmentation).
 
 > **Scope note:** Based on a course lab (a web-app PaaS scenario). I re-scoped it to a water-utility OT/IT scenario, added least-privilege access decisions, wrote a validation script, and documented the issues I hit. Built in the Azure portal as a learning lab, not a production deployment.
 
