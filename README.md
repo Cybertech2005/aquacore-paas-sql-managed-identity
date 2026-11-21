@@ -105,10 +105,6 @@ DTU percentage chart for the database. I captured it after rebuilding the databa
 - **Region mismatch.** The SQL server is in Central US and the VM is in East US 2. It works, but cross-region adds latency and is not what I'd choose for production.
 - **Tooling gap.** The VM's older `pip` did not support `--break-system-packages`; plain `pip3 install pyodbc` worked.
 
-## Cost control
-
-Basic-tier SQL Database bills while it exists, and the VMs bill while running. I delete the resource group (`rg-lab03-jlassiter`) after capturing evidence.
-
 ## What I learned
 
 - Managed identities remove stored credentials, but each Azure service has its own authorization system.
