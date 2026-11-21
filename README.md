@@ -98,7 +98,7 @@ DTU percentage chart for the database. I captured it after rebuilding the databa
 
 ## Honest notes and things that went wrong
 
-- **DTU vs CPU alert signal.** The lab called for a DTU-percentage alert. The DTU % metric is charted on the database Overview page, but it was not accepted when creating the alert rule in the portal, so I alerted on **CPU percentage** instead.
+- - **DTU vs CPU alert signal.** The lab called for a DTU-percentage alert. DTU % is charted on the database Metrics page (screenshot above), but the portal did not accept it when I created the alert rule, so I alerted on **CPU percentage** instead.
 - **Alert not load-tested.** I confirmed the rule exists, is enabled, and points at the action group. I did not generate load to force it to fire.
 - **Orphaned role assignment.** After rebuilding the VM, Key Vault showed an "Unknown" role assignment pointing at the deleted VM's old identity. I removed it and assigned Key Vault Secrets User to the new identity.
 - **Wrong role first.** I initially selected Key Vault Administrator in the assignment screen and had to switch to Secrets User for the VM identity.
