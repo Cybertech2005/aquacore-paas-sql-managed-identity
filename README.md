@@ -90,6 +90,12 @@ Metric alert on the database: **CPU percentage, average, greater than 80, checke
 
 ![Alert rule overview](screenshots/alert-rule.png)
 
+
+DTU percentage chart for the database. I captured it after rebuilding the database, since the original was deleted to save cost. The database was near-idle (0 to 2%).
+
+![DTU percentage metric chart](screenshots/dtu-metrics.png)
+
+
 ## Honest notes and things that went wrong
 
 - **DTU vs CPU alert signal.** The lab called for a DTU-percentage alert. The DTU % metric is charted on the database Overview page, but it was not accepted when creating the alert rule in the portal, so I alerted on **CPU percentage** instead.
