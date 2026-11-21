@@ -38,8 +38,7 @@ Azure SQL Database is a PaaS service, so Azure runs the server, patching and bac
    *Why: least privilege, so the VM can read data but not change it.*
 7. **Ran the validation from the VM.** SSH'd in, installed ODBC Driver 18 and `pyodbc`, and ran `validate_identity.py`. Both the Key Vault read and the SQL login passed with no password.
    *Why: the VM proves who it is with a token from the metadata service.*
-8. **Added monitoring.** Created a CPU-percentage metric alert on the database with an Action Group that emails me.
-   *Why: a managed database has no server to watch, so the alert is how I find out about trouble.*
+8. **Added monitoring.** Created a CPU-percentage metric alert on the database with an Action Group that emails me. *Why: Azure runs the server, so I don't log into it to check on it. The alert tells me when the database is under heavy load.*
 
 The OT control VM (`vm-ot-control`) deliberately has **no** managed identity. It has no reason to reach the database or vault, and it sits in the private OT subnet from Project 2.
 
