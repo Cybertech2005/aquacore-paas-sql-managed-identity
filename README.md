@@ -10,7 +10,7 @@ Continuing the fictional **Aqua Core Solutions** water-utility scenario from [aq
 
 A VM can read a secret from Key Vault **and** query an Azure SQL Database using only its **system-assigned managed identity**. No passwords or connection-string secrets are typed into or stored on the VM. An Azure Monitor alert emails me if database load gets high.
 
-Azure SQL Database is a PaaS service, so Azure runs the server, patching and backups, and I only manage who can access it.
+Azure SQL Database is a PaaS offering, so Azure runs the server, patching and backups, and I only manage who can access it.
 
 ## Architecture (what was built)
 
@@ -38,7 +38,8 @@ Azure SQL Database is a PaaS service, so Azure runs the server, patching and bac
    *Why: least privilege, so the VM can read data but not change it.*
 7. **Ran the validation from the VM.** SSH'd in, installed ODBC Driver 18 and `pyodbc`, and ran `validate_identity.py`. Both the Key Vault read and the SQL login passed with no password.
    *Why: the VM proves who it is with a token from the metadata service.*
-8. **Added monitoring.** Created a CPU-percentage metric alert on the database with an Action Group that emails me. *Why: Azure runs the server, so I don't log into it to check on it. The alert tells me when the database is under heavy load.*
+8. **Added monitoring.** Created a CPU-percentage metric alert on the database with an Action Group that emails me.
+   *Why: Azure runs the server, so I don't log into it to check on it. The alert tells me when the database is under heavy load.*
 
 The OT control VM (`vm-ot-control`) deliberately has **no** managed identity. It has no reason to reach the database or vault, and it sits in the private OT subnet from Project 2.
 
@@ -51,7 +52,7 @@ The OT control VM (`vm-ot-control`) deliberately has **no** managed identity. It
 | VM managed identity | Key Vault | **Key Vault Secrets User** | Read secrets only |
 | VM managed identity | SQL database | Contained user + **db_datareader** | Read data only |
 | Me (human admin) | Key Vault | Key Vault Administrator | Create/manage the secret |
-| Me | SQL server | Microsoft Entra admin | Required to create the identity's DB user |
+| Me (human admin)| SQL server | Microsoft Entra admin | Required to create the identity's DB user |
 
 Key Vault and SQL have **separate permission systems**. Granting the identity Key Vault access does nothing for SQL; each needed its own grant.
 
@@ -85,7 +86,7 @@ RESULT: PASS - managed identity works for both
 
 ## Monitoring
 
-Metric alert on the database: **CPU percentage, average, greater than 80, checked every 1 minute over a 5 minute window**, severity 2 (Warning), emailing via an Action Group.
+Metric alert on the database: **CPU percentage, average, greater than 80, checked every 1 minute over a 5-minute window**, severity 2 (Warning), emailing via an Action Group.
 
 ![Alert rule overview](screenshots/alert-rule.png)
 
@@ -97,7 +98,7 @@ DTU percentage chart for the database. I captured it after rebuilding the databa
 
 ## Honest notes and things that went wrong
 
-- - **DTU vs CPU alert signal.** The lab called for a DTU-percentage alert. DTU % is charted on the database Metrics page (screenshot above), but the portal did not accept it when I created the alert rule, so I alerted on **CPU percentage** instead.
+- **DTU vs CPU alert signal.** The lab called for a DTU-percentage alert. DTU % is charted on the database Metrics page (screenshot above), but the portal did not accept it when I created the alert rule, so I alerted on **CPU percentage** instead.
 - **Alert not load-tested.** I confirmed the rule exists, is enabled, and points at the action group. I did not generate load to force it to fire.
 - **Orphaned role assignment.** After rebuilding the VM, Key Vault showed an "Unknown" role assignment pointing at the deleted VM's old identity. I removed it and assigned Key Vault Secrets User to the new identity.
 - **Wrong role first.** I initially selected Key Vault Administrator in the assignment screen and had to switch to Secrets User for the VM identity.
@@ -106,7 +107,7 @@ DTU percentage chart for the database. I captured it after rebuilding the databa
 
 ## Cost control
 
-Basic-tier SQL Database bills while it exists, and the VMs bill while running. I delete both resource groups after capturing evidence.
+Basic-tier SQL Database bills while it exists, and the VMs bill while running. I delete the resource group (`rg-lab03-jlassiter`) after capturing evidence.
 
 ## What I learned
 
